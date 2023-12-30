@@ -11,6 +11,13 @@ const validation = joi.object({
     is_active: joi.boolean().default(true),
 });
 
+const loginFieldValidation = joi.object({
+	userName: joi.string().alphanum().min(3).max(25).trim(true).required(),
+	password: joi.string().min(8).trim(true).required()
+.default([]),
+   is_active: joi.boolean().default(true),
+});
+
 const userValidation = async (req, res, next) => {
 	const payload = {
 		userName: req.body.userName,
@@ -31,4 +38,25 @@ const userValidation = async (req, res, next) => {
 		next();
 	}
 };
-module.exports = userValidation;
+
+const loginValidation = async (req, res, next) => {
+	const payload = {
+		userName: req.body.userName,
+		password: req.body.password,
+	};
+	console.log(payload);
+	const { error } = loginFieldValidation.validate(payload);
+	if (error) {
+		res.status(406);
+		return res.json(
+			errorFunction(true, `Error in User Data : ${error.message}`)
+		);
+	} else {
+		next();
+	}
+};
+
+module.exports = {
+	userValidation,
+	loginValidation
+}

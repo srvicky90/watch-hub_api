@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const uuid = require('uuid')
 const userSchema = new mongoose.Schema(
 {
 	userName: {
@@ -6,6 +7,12 @@ const userSchema = new mongoose.Schema(
 		required: true,
 		trim: true,
 	},
+	userId: {
+        type: String,
+        required: true,
+        default: () => uuid.v4(),
+        index: { unique: true},
+    },
     firstName: {
 		type: String,
 		required: true,
@@ -30,6 +37,10 @@ const userSchema = new mongoose.Schema(
 		type: Boolean,
 		default: true,
 	},
+	friends : {
+		type: Array,
+		default: [],
+	}
 },
 { timestamps: true }
 );
