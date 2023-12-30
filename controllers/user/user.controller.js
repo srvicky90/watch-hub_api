@@ -86,7 +86,35 @@ const loginUser = async (req, res, next) => {
 	}
 }
 
+const getUserDetails = async (req, res, next) => {
+	console.log('Username', req.body.userName);
+	try {
+		const existingUser = await User.findOne({
+			userName: req.body.userName,
+		}).lean(true);
+		if (existingUser) {
+			res.status(201);
+			console.log("User Found with details");
+			res.status(200);
+			return res.json(
+				errorFunction(false, "User Details found", existingUser)
+			);
+		} else {
+			res.status(401);
+			return res.json(
+				errorFunction(false, "User Not found. Please register.")
+			);
+		}
+	} catch (error) {
+		res.status(400);
+		console.log(error);
+		return res.json(errorFunction(true, "User Not found."));
+	}
+}
+
+
 module.exports = {
 	addUser,
-	loginUser
+	loginUser,
+	getUserDetails
 }
