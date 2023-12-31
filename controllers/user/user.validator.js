@@ -22,6 +22,10 @@ const getUserDetailsValidation = joi.object({
 	userName: joi.string().alphanum().min(3).max(25).trim(true).required(),
 });
 
+const searchUser = joi.object({
+	searchString: joi.string().alphanum().min(3).max(50).trim(true).required(),
+});
+
 const userValidation = async (req, res, next) => {
 	const payload = {
 		userName: req.body.userName,
@@ -76,8 +80,25 @@ const getUserDetails = async (req, res, next) => {
 	}
 };
 
+const searchUsers = async (req, res, next) => {
+	const payload = {
+		searchString: req.body.searchString,
+	};
+	console.log(payload);
+	const { error } = searchUser.validate(payload);
+	if (error) {
+		res.status(406);
+		return res.json(
+			errorFunction(true, `Error in User Data : ${error.message}`)
+		);
+	} else {
+		next();
+	}
+};
+
 module.exports = {
 	userValidation,
 	loginValidation,
-	getUserDetails
+	getUserDetails,
+	searchUsers
 }

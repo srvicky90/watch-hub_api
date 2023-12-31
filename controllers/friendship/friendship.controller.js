@@ -203,6 +203,8 @@ const getFriends = async (req, res, next) => {
 };
 
 
+
+
 module.exports = {
     createPendingFriendReq,
     getPendingRequests,

@@ -112,9 +112,44 @@ const getUserDetails = async (req, res, next) => {
 	}
 }
 
+const searchUsers = async (req, res, next) => {
+	console.log('searchString', req.body.searchString);
+	try {
+		const searchPattern = new RegExp(req.body.searchString, 'i');
+		// Perform the search across multiple fields
+		const users = await User.find({
+			$or: [
+				{ userName: searchPattern },
+				{ firstName: searchPattern },
+				{ lastName: searchPattern }
+			]
+		});
+		if (users.length == 0) {
+			res.status(200);
+			return res.json(
+				errorFunction(false, "No users matches your search", users)
+			);
+		} else if (users.length > 0) {
+			res.status(200);
+			return res.json(
+				errorFunction(false, "Search List", users)
+			);
+		} else {
+			res.status(400);
+			return res.json(
+				errorFunction(false, "No users matches your search")
+			);
+		}
+	} catch (error) {
+		res.status(400);
+		console.log(error);
+		return res.json(errorFunction(true, "No users matches your search"));
+	}
+}
 
 module.exports = {
 	addUser,
 	loginUser,
-	getUserDetails
+	getUserDetails,
+	searchUsers
 }
