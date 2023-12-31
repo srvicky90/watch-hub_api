@@ -1,7 +1,7 @@
 const express = require("express");
 
 const userValidation = require("../controllers/user/user.validator");
-const { addUser, loginUser, getUserDetails, searchUsers } = require("../controllers/user/user.controller");
+const { addUser, loginUser, getUserDetails, searchUsers, deleteUserAccount } = require("../controllers/user/user.controller");
 
 const friendshipValidation = require("../controllers/friendship/friendship.validator");
 const { createPendingFriendReq, getPendingRequests, respondRequest, getFriends  } = require("../controllers/friendship/friendship.controller");
@@ -15,6 +15,7 @@ router.post("/addUser", userValidation.userValidation, addUser);
 router.post("/login", userValidation.loginValidation, loginUser);
 router.post("/getUserDetails", userValidation.getUserDetails, getUserDetails);
 router.post("/searchUser", userValidation.searchUsers, searchUsers);
+router.post("/deleteUser", userValidation.deleteUserAccount, deleteUserAccount);
 
 router.post("/sendFriendRequest", friendshipValidation.friendshipValidation, createPendingFriendReq);
 router.post("/friendRequests", friendshipValidation.friendRequests, getPendingRequests);

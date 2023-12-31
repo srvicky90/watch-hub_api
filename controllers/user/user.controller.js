@@ -148,9 +148,38 @@ const searchUsers = async (req, res, next) => {
 	}
 }
 
+const deleteUserAccount = async (req, res, next) => {
+	console.log('user id', req.body.userId);
+	try {
+		const user = await User.findOneAndDelete({
+			$or: [
+				{ userId: req.body.userId },
+			]
+		}).lean(true);
+		if (user) {
+			res.status(200);
+			return res.json(
+				errorFunction(false, "User deleted", user)
+			);
+		} else {
+			res.status(200);
+			return res.json(
+				errorFunction(false, "No user found. unable to delete")
+			);
+		}
+	} catch (error) {
+		res.status(400);
+		console.log(error);
+		return res.json(
+			errorFunction(true, "No user found. unable to delete")
+		);
+	}
+}
+
 module.exports = {
 	addUser,
 	loginUser,
 	getUserDetails,
-	searchUsers
+	searchUsers,
+	deleteUserAccount
 }
