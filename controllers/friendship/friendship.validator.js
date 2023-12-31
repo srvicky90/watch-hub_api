@@ -3,13 +3,13 @@ const errorFunction = require("../../utils/error_function");
 const Joi = require("joi");
 
 const validation = joi.object({
-     userName1: joi.string().alphanum().min(3).max(25).trim(true).required(),
-     userName2: joi.string().alphanum().min(3).max(25).trim(true).required(),
+     sender: joi.string().min(3).max(50).trim(true).required(),
+     receiver: joi.string().min(3).max(50).trim(true).required(),
      status: joi.string().valid("accepted", "declined", "pending").required()
 });
 
 const pendingRequestsValidation = joi.object({
-    userName2: joi.string().alphanum().min(3).max(25).trim(true).required(),
+    receiver: joi.string().min(3).max(50).trim(true).required(),
 });
 
 const respondRequestValidation = joi.object({
@@ -18,13 +18,13 @@ const respondRequestValidation = joi.object({
 });
 
 const getFriendsValidation = joi.object({
-    userName: joi.string().min(3).max(50).trim(true).required(),
+    userId: joi.string().min(3).max(50).trim(true).required(),
 });
 
 const friendshipValidation = async (req, res, next) => {
 	const payload = {
-		userName1: req.body.userName1,
-        userName2: req.body.userName2,
+		sender: req.body.sender,
+        receiver: req.body.receiver,
         status: req.body.status,
 	};
 	console.log(payload);
@@ -41,7 +41,7 @@ const friendshipValidation = async (req, res, next) => {
 
 const friendRequests = async (req, res, next) => {
 	const payload = {
-		userName2: req.body.userName2,
+		receiver: req.body.receiver,
 	};
 	console.log(payload);
 	const { error } = pendingRequestsValidation.validate(payload);
@@ -74,9 +74,9 @@ const respondRequest = async (req, res, next) => {
 };
 
 const getFriends = async (req, res, next) => {
-    console.log("User Id in validator " + req.body.userName);
+    console.log("User Id in validator " + req.body.Id);
 	const payload = {
-		userName: req.body.userName,
+		userId: req.body.userId,
 	};
 	const { error } = getFriendsValidation.validate(payload);
 	if (error) {

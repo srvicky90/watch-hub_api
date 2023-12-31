@@ -76,7 +76,7 @@ const loginUser = async (req, res, next) => {
 		} else {
 			res.status(401);
 			return res.json(
-				errorFunction(false, "User Not found. Please register.")
+				errorFunction(true, "User Not found. Please register.")
 			);
 		}
 	} catch (error) {
@@ -100,9 +100,9 @@ const getUserDetails = async (req, res, next) => {
 				errorFunction(false, "User Details found", existingUser)
 			);
 		} else {
-			res.status(401);
+			res.status(400);
 			return res.json(
-				errorFunction(false, "User Not found. Please register.")
+				errorFunction(false, "User Not found")
 			);
 		}
 	} catch (error) {

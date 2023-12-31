@@ -6,15 +6,15 @@ const createPendingFriendReq = async (req, res, next) => {
     try {
         const alreadyFriend = await Friendship.findOne({
             $or: [
-                { userName1: req.body.userName1, userName2: req.body.userName2 },
-                { userName1: req.body.userName2, userName2: req.body.userName1 }
+                { sender: req.body.sender, receiver: req.body.receiver },
+                { sender: req.body.receiver, receiver: req.body.sender }
             ],
             status: 'accepted' // Assuming 'accepted' is the status for a confirmed friendship
         });
         const alreadyRequestSent = await Friendship.findOne({
             $or: [
-                { userName1: req.body.userName1, userName2: req.body.userName2 },
-                { userName1: req.body.userName2, userName2: req.body.userName1 }
+                { sender: req.body.sender, receiver: req.body.receiver },
+                { sender: req.body.receiver, receiver: req.body.sender }
             ],
             status: 'pending' // Assuming 'accepted' is the status for a confirmed friendship
         });
@@ -26,8 +26,8 @@ const createPendingFriendReq = async (req, res, next) => {
             return res.json(errorFunction(true, "There's a pending request already."));
         } else {
             const newFriend = await Friendship.create({
-                userName1: req.body.userName1,
-                userName2: req.body.userName2,
+                sender: req.body.sender,
+                receiver: req.body.receiver,
                 status: 'pending'
             }
             );
@@ -52,7 +52,7 @@ const getPendingRequests = async (req, res, next) => {
     try {
         const pendingRequests = await Friendship.find({
             $or: [
-                { userName2: req.body.userName2 }
+                { receiver: req.body.receiver }
             ],
             status: 'pending'
         });
@@ -108,12 +108,16 @@ const getFriends = async (req, res, next) => {
     try {
         const userFriends = await Friendship.find({
             $or: [
-                { userName1: req.body.userName }, 
-                { userName2: req.body.userName }
+                { sender: req.body.userId }, 
+                { receiver: req.body.userId }
             ],
             status: 'accepted' 
           });
         console.log(userFriends);
+
+
+
+        
         res.status(201);
         return res.json(
             errorFunction(false, "Friends List", userFriends)

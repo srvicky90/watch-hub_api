@@ -8,12 +8,12 @@ const friendshipSchema = new mongoose.Schema(
         default: () => uuid.v4(),
         index: { unique: true},
     },
-	userName1: {
+	sender: {
 		type: String,
-		required: true,
+		required: true, 
 		trim: true,
 	},
-    userName2: {
+    receiver: {
 		type: String,
 		required: true,
 		trim: true,
