@@ -121,6 +121,7 @@ const searchUsers = async (req, res, next) => {
 			$or: [
 				{ userName: searchPattern },
 				{ firstName: searchPattern },
+				{ emailAddress: searchPattern },
 				{ lastName: searchPattern }
 			]
 		});
