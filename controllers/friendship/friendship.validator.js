@@ -14,7 +14,7 @@ const pendingRequestsValidation = joi.object({
 
 const respondRequestValidation = joi.object({
     friendshipId: joi.string().min(3).max(50).trim(true).required(),
-	status: joi.string().valid("accepted", "declined").required()
+	status: joi.string().valid("accepted", "declined", "blocked", "ignored", "unfriended").required()
 });
 
 const getFriendsValidation = joi.object({
@@ -74,7 +74,7 @@ const respondRequest = async (req, res, next) => {
 };
 
 const getFriends = async (req, res, next) => {
-    console.log("User Id in validator " + req.body.Id);
+    console.log("User Id in validator " + req.body.userId);
 	const payload = {
 		userId: req.body.userId,
 	};

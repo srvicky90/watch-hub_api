@@ -1,5 +1,6 @@
 const { func } = require("joi");
 const Friendship = require("../../models/friends");
+const Authentication = require("../../models/user");
 const errorFunction = require("../../utils/error_function");
 
 const createPendingFriendReq = async (req, res, next) => {
@@ -50,31 +51,68 @@ const createPendingFriendReq = async (req, res, next) => {
 
 const getPendingRequests = async (req, res, next) => {
     try {
-        const pendingRequests = await Friendship.find({
-            $or: [
-                { receiver: req.body.receiver }
-            ],
-            status: 'pending'
-        });
-        console.log(pendingRequests);
+        const userFriends = await Friendship.aggregate([
+            {
+                $match: {
+                    $or: [{ sender: req.body.receiver }, { receiver: req.body.receiver }],
+                    status: "pending"
+                }
+            },
+            {
+                $lookup: {
+                    from: "wh_users",
+                    let: {
+                        friendId: {
+                            $cond: [
+                                { $eq: ["$sender", req.body.receiver] },
+                                "$receiver",
+                                "$sender"
+                            ]
+                        }
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ["$$friendId", "$userId"] }
+                            }
+                        },
+                        {
+                            $project: {
+                                firstName: 1,
+                                lastName: 1,
+                                emailAddress: 1
+                            }
+                        }
+                    ],
+                    as: "friends"
+                }
+            }
+        ])
         res.status(201);
         return res.json(
-            errorFunction(false, "Pending friend requests.", pendingRequests)
+            errorFunction(false, "Pending Friends Requests", userFriends)
         );
     } catch (error) {
         res.status(400);
         console.log(error);
-        return res.json(errorFunction(true, "Failed to fetch the pending friend requests"));
+        return res.json(errorFunction(true, "Failed to fetch the pending requests list."));
     }
 };
 
 const respondRequest = async (req, res, next) => {
     try {
+        friendship = Friendship;
         console.log("Friendship Id in controller " + req.body.friendshipId)
-        const friendship = await Friendship.findOneAndUpdate(
-			{ $or: [{friendshipId: req.body.friendshipId}] },
-            {$set: {status: req.body.status}}
-		);
+        if (req.body.status == "unfriended") {
+            friendship = await Friendship.deleteOne(
+                { $or: [{ friendshipId: req.body.friendshipId }] },
+            )
+        } else {
+            friendship = await Friendship.findOneAndUpdate(
+                { $or: [{ friendshipId: req.body.friendshipId }] },
+                { $set: { status: req.body.status } }
+            );
+        }
         console.log(friendship);
         if (friendship) {
             res.status(201);
@@ -82,6 +120,16 @@ const respondRequest = async (req, res, next) => {
                 case "accepted":
                     return res.json(
                         errorFunction(false, "You now have a new friend.", friendship)
+                    );
+                    break;
+                case "blocked":
+                    return res.json(
+                        errorFunction(false, "The user is blocked. You can't receive any recommendations from the user.", friendship)
+                    );
+                    break;
+                case "unfriended":
+                    return res.json(
+                        errorFunction(false, "The user has been unfriended. You can still add him as a friend. ", friendship)
                     );
                     break;
                 default:
@@ -106,18 +154,43 @@ const respondRequest = async (req, res, next) => {
 
 const getFriends = async (req, res, next) => {
     try {
-        const userFriends = await Friendship.find({
-            $or: [
-                { sender: req.body.userId }, 
-                { receiver: req.body.userId }
-            ],
-            status: 'accepted' 
-          });
-        console.log(userFriends);
-
-
-
-        
+        const userFriends = await Friendship.aggregate([
+            {
+                $match: {
+                    $or: [{ sender: req.body.userId }, { receiver: req.body.userId }],
+                    status: "accepted" // Consider only accepted friendships
+                }
+            },
+            {
+                $lookup: {
+                    from: "wh_users",
+                    let: {
+                        friendId: {
+                            $cond: [
+                                { $eq: ["$sender", req.body.userId] },
+                                "$receiver",
+                                "$sender"
+                            ]
+                        }
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ["$$friendId", "$userId"] }
+                            }
+                        },
+                        {
+                            $project: {
+                                firstName: 1,
+                                lastName: 1,
+                                emailAddress: 1
+                            }
+                        }
+                    ],
+                    as: "friends"
+                }
+            }
+        ])
         res.status(201);
         return res.json(
             errorFunction(false, "Friends List", userFriends)
