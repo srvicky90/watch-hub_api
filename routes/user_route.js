@@ -7,7 +7,7 @@ const friendshipValidation = require("../controllers/friendship/friendship.valid
 const { createPendingFriendReq, getPendingRequests, respondRequest, getFriends  } = require("../controllers/friendship/friendship.controller");
 
 const reccomendationValidation = require("../controllers/recommendation/recommendation.validator");
-const { recommendMovie  } = require("../controllers/recommendation/recommendation.controller");
+const { recommendMovie, showRecommendations } = require("../controllers/recommendation/recommendation.controller");
 
 const defaultController = require("../controllers/default_controller");
 
@@ -26,5 +26,6 @@ router.post("/respondFriendRequest", friendshipValidation.respondRequest, respon
 router.post("/getFriends", friendshipValidation.getFriends, getFriends);
 
 router.post("/recommendMovie", reccomendationValidation.addRecommendation, recommendMovie);
+router.post("/showRecommendations", reccomendationValidation.showRecommendations, showRecommendations);
 
 module.exports = router;

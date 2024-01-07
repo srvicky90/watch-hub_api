@@ -10,8 +10,13 @@ const addRecommendationValidation = joi.object({
         movieGenre: joi.string().min(1).max(50).trim(true).required(),
     }),
     receiverId: joi.string().min(3).max(50).trim(true).required(),
-    status: joi.string().valid("active", "revoked", "liked").required()
+    status: joi.string().valid("new","active", "ignored", "liked").required()
 });
+
+const ShowRecommendationsValidation = joi.object({
+    userId: joi.string().min(3).max(50).trim(true).required(),
+});
+
 
 const addRecommendation = async (req, res, next) => {
     const moviePayload = {
@@ -38,6 +43,24 @@ const addRecommendation = async (req, res, next) => {
     }
 };
 
+const showRecommendations = async (req, res, next) => {
+    const payload = {
+        userId: req.body.userId
+    };
+    console.log(payload);
+    const { error } = ShowRecommendationsValidation.validate(payload);
+    if (error) {
+        console.log(error);
+        res.status(406);
+        return res.json(
+            errorFunction(true, `Error in User Data : ${error.message}`)
+        );
+    } else {
+        next();
+    }
+};
+
 module.exports = {
-    addRecommendation
+    addRecommendation,
+    showRecommendations
 }

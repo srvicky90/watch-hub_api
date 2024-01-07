@@ -12,7 +12,7 @@ const recommendMovie = async (req, res, next) => {
                 { senderId: req.body.receiverId, receiverId: req.body.senderId }
             ],
             $and: [
-                {movieId: req.body.movie.movieId}
+                { movieId: req.body.movie.movieId }
             ],
             recommendationStatus: 'active'
         });
@@ -39,17 +39,17 @@ const recommendMovie = async (req, res, next) => {
                 }
                 );
             }
-                if (newRecommendation) {
-                    res.status(201);
-                    return res.json(
-                        errorFunction(false, "Recommendation Sent.", newRecommendation)
-                    );
-                } else {
-                    res.status(400);
-                    console.log(error);
-                    return res.json(errorFunction(true, "Error Recommending this movie. Please try again."));
-                }
-            
+            if (newRecommendation) {
+                res.status(201);
+                return res.json(
+                    errorFunction(false, "Recommendation Sent.", newRecommendation)
+                );
+            } else {
+                res.status(400);
+                console.log(error);
+                return res.json(errorFunction(true, "Error Recommending this movie. Please try again."));
+            }
+
         }
     } catch (error) {
         res.status(400);
@@ -58,6 +58,49 @@ const recommendMovie = async (req, res, next) => {
     }
 };
 
+const showRecommendations = async (req, res, next) => {
+    console.log(req.body);
+    try {
+        const recommendations = await Recommendation.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { recommendationStatus: 'active' },
+                        { recommendationStatus: 'new' },
+                        { recommendationStatus: 'liked' },
+                    ],
+                    $and: [
+                        { receiverId: req.body.userId}
+                    ]
+                }
+            },
+            {
+                $lookup: {
+                    from: "wh_movies",
+                    localField: "movieId",
+                    foreignField: "movieId",
+                    as: "movie"
+                }
+            }
+        ]
+            
+        );
+        console.log(recommendations);
+        if (recommendations) {
+            res.status(200);
+            return res.json(errorFunction(false, "Recommendation list", recommendations ));
+        } else {
+            res.status(400);
+            return res.json(errorFunction(false, "No recommendations yet."));
+        }
+    } catch (error) {
+        res.status(400);
+        console.log(error);
+        return res.json(errorFunction(true, "Error fetching recommendations. Please try again."));
+    }
+};
+
 module.exports = {
-    recommendMovie
+    recommendMovie,
+    showRecommendations
 }
