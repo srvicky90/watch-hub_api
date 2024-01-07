@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const uuid = require('uuid')
-const friendshipSchema = new mongoose.Schema(
+const schema = new mongoose.Schema(
 {
 	recommendationId: {
         type: String,
@@ -28,11 +28,16 @@ const friendshipSchema = new mongoose.Schema(
 		type: String,
 		required: true,
 		trim: true,
+	},
+    movieId: {
+		type: String,
+		required: true,
+		trim: true,
 	}
 
 },
 { timestamps: true }
 );
 
-const Friendship = mongoose.model("wh_recommendation", friendshipSchema);
+const Friendship = mongoose.model("wh_recommendation", schema);
 module.exports = Friendship;

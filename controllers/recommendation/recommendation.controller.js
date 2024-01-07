@@ -11,6 +11,9 @@ const recommendMovie = async (req, res, next) => {
                 { senderId: req.body.senderId, receiverId: req.body.receiverId },
                 { senderId: req.body.receiverId, receiverId: req.body.senderId }
             ],
+            $and: [
+                {movieId: req.body.movie.movieId}
+            ],
             recommendationStatus: 'active'
         });
         console.log(alreadyRecommended);
@@ -21,7 +24,8 @@ const recommendMovie = async (req, res, next) => {
             const newRecommendation = await Recommendation.create({
                 senderId: req.body.senderId,
                 receiverId: req.body.receiverId,
-                recommendationStatus: 'active'
+                recommendationStatus: 'active',
+                movieId: req.body.movie.movieId,
             }
             );
             const isMovieAlreadyThere = await Movies.findOne({
