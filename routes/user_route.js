@@ -6,6 +6,9 @@ const { addUser, loginUser, getUserDetails, searchUsers, deleteUserAccount } = r
 const friendshipValidation = require("../controllers/friendship/friendship.validator");
 const { createPendingFriendReq, getPendingRequests, respondRequest, getFriends  } = require("../controllers/friendship/friendship.controller");
 
+const reccomendationValidation = require("../controllers/recommendation/recommendation.validator");
+const { recommendMovie  } = require("../controllers/recommendation/recommendation.controller");
+
 const defaultController = require("../controllers/default_controller");
 
 const router = express.Router();
@@ -21,5 +24,7 @@ router.post("/sendFriendRequest", friendshipValidation.friendshipValidation, cre
 router.post("/friendRequests", friendshipValidation.friendRequests, getPendingRequests);
 router.post("/respondFriendRequest", friendshipValidation.respondRequest, respondRequest);
 router.post("/getFriends", friendshipValidation.getFriends, getFriends);
+
+router.post("/recommendMovie", reccomendationValidation.addRecommendation, recommendMovie);
 
 module.exports = router;
