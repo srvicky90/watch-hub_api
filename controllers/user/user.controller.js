@@ -224,10 +224,7 @@ const forgotPassword = async (req, res, next) => {
 				subject: 'Sending Email using Node.js',
 				text: 'That was easy!'
 			};
-			return res.json(
-				errorFunction(false, "A one time password has been sent to your email. Please use it to reset your. ", user)
-			);
-			/*transporter.sendMail(mailOptions, function (error, info) {
+			transporter.sendMail(mailOptions, function (error, info) {
 				if (error) {
 					res.status(400);
 					console.log(error);
@@ -241,7 +238,10 @@ const forgotPassword = async (req, res, next) => {
 						errorFunction(false, "A one time password has been sent to your email. Please use it to reset your. ", user)
 					);
 				}
-			});*/
+			});
+			return res.json(
+				errorFunction(false, "A one time password has been sent to your email. Please use it to reset your. ", user)
+			);
 		}
 	} catch (error) {
 		res.status(400);
