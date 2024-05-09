@@ -14,7 +14,7 @@ const recommendMovie = async (req, res, next) => {
             $and: [
                 { movieId: req.body.movie.movieId }
             ],
-            recommendationStatus: 'active'
+            recommendationStatus: req.body.recommendationStatus
         });
         console.log(alreadyRecommended);
         if (alreadyRecommended) {
