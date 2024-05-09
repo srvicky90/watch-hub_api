@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema(
 	friends : {
 		type: Array,
 		default: [],
+	},
+	isPasswordReset : {
+		type: Boolean,
+		default: false,
 	}
 },
 { timestamps: true }

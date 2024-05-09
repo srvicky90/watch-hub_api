@@ -35,7 +35,9 @@ const recommendMovie = async (req, res, next) => {
                 const newMovie = await Movies.create({
                     movieId: req.body.movie.movieId,
                     movieName: req.body.movie.movieName,
-                    genre: req.body.movie.movieGenre
+                    genre: req.body.movie.movieGenre,
+                    link: req.body.movie.link,
+                    type: req.body.movie.type
                 }
                 );
             }
@@ -70,7 +72,7 @@ const showRecommendations = async (req, res, next) => {
                         { recommendationStatus: 'liked' },
                     ],
                     $and: [
-                        { receiverId: req.body.userId}
+                        { receiverId: req.body.userId }
                     ]
                 }
             },

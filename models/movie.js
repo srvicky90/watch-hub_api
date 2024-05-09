@@ -15,6 +15,16 @@ const movieSchema = new mongoose.Schema(
 		type: String,
 		required: true,
 		trim: true,
+	},
+	link: {
+		type: String,
+		required: true,
+		trim: true,
+	},
+	type: {
+		type: String,
+		required: true,
+		trim: true,
 	}
 },
 { timestamps: true }

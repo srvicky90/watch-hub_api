@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+var nodemailer = require('nodemailer');
 const User = require("../../models/user");
 const errorFunction = require("../../utils/error_function");
 const securePassword = require("./../../utils/secure_password");
@@ -27,6 +28,7 @@ const addUser = async (req, res, next) => {
 				emailAddress: req.body.emailAddress,
 				password: hashedPassword,
 				is_active: req.body.is_active,
+
 			});
 			if (newUser) {
 				res.status(201);
@@ -176,10 +178,85 @@ const deleteUserAccount = async (req, res, next) => {
 	}
 }
 
+const forgotPassword = async (req, res, next) => {
+	console.log('user id', req.body.userId);
+	try {
+		user = await User.findOne({
+			$or: [
+				{ userId: req.body.userId },
+			]
+		}).lean(true);
+		if (user) {
+			const crypto = require('crypto')
+			const generatePassword = (
+				length = 10,
+				characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'
+			) =>
+				Array.from(crypto.randomFillSync(new Uint32Array(length)))
+					.map((x) => characters[x % characters.length])
+					.join('')
+			let newPass = generatePassword();
+			console.log(newPass);	
+			const hashedPassword = await securePassword(newPass);
+			console.log(hashedPassword);
+			const user1 = await User.findOneAndUpdate (
+				{ userId: req.body.userId  },
+				{
+					$set:
+					{
+						password: hashedPassword,
+						isPasswordReset: false
+					},
+				}
+			);
+			console.log(user1);
+			//send token to email address.
+			var transporter = nodemailer.createTransport({
+				service: 'gmail',
+				auth: {
+					user: 'viravtechnologies@gmail.com',
+					pass: 'syheavdgeblmqeim'
+				}
+			});
+			var mailOptions = {
+				from: 'viravtechnologies@gmail.com',
+				to: 'srvicky90@gmail.com',
+				subject: 'Sending Email using Node.js',
+				text: 'That was easy!'
+			};
+			return res.json(
+				errorFunction(false, "A one time password has been sent to your email. Please use it to reset your. ", user)
+			);
+			/*transporter.sendMail(mailOptions, function (error, info) {
+				if (error) {
+					res.status(400);
+					console.log(error);
+					return res.json(
+						errorFunction(true, "Unable to send an email. Please try again.")
+					);
+				} else {
+					console.log('Email sent: ' + info.response);
+					res.status(200);
+					return res.json(
+						errorFunction(false, "A one time password has been sent to your email. Please use it to reset your. ", user)
+					);
+				}
+			});*/
+		}
+	} catch (error) {
+		res.status(400);
+		console.log(error);
+		return res.json(
+			errorFunction(true, "No user found. unable to delete")
+		);
+	}
+}
+
 module.exports = {
 	addUser,
 	loginUser,
 	getUserDetails,
 	searchUsers,
-	deleteUserAccount
+	deleteUserAccount,
+	forgotPassword
 }

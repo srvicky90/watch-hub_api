@@ -9,6 +9,7 @@ const validation = joi.object({
 	password: joi.string().min(8).trim(true).required()
 		.default([]),
 	is_active: joi.boolean().default(true),
+	is_password_reset: joi.boolean().default(false),
 });
 
 const loginFieldValidation = joi.object({
@@ -27,6 +28,10 @@ const searchUser = joi.object({
 });
 
 const deleteUser = joi.object({
+	userId: joi.string().min(3).max(50).trim(true).required(),
+});
+
+const forgotPasswordValidation = joi.object({
 	userId: joi.string().min(3).max(50).trim(true).required(),
 });
 
@@ -116,10 +121,27 @@ const deleteUserAccount = async (req, res, next) => {
 	}
 };
 
+const forgotPassword = async (req, res, next) => {
+	const payload = {
+		userId: req.body.userId,
+	};
+	console.log(payload);
+	const { error } = forgotPasswordValidation.validate(payload);
+	if (error) {
+		res.status(406);
+		return res.json(
+			errorFunction(true, `Error in User Data : ${error.message}`)
+		);
+	} else {
+		next();
+	}
+};
+
 module.exports = {
 	userValidation,
 	loginValidation,
 	getUserDetails,
 	searchUsers,
-	deleteUserAccount
+	deleteUserAccount,
+	forgotPassword
 }
