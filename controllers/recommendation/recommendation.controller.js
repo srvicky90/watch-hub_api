@@ -74,7 +74,7 @@ const ignoreRecommendedMovie = async (req, res, next) => {
         console.log(ignoreRecommendation);
         if (!ignoreRecommendation) {
             res.status(403);
-            return res.json(errorFunction(true, "Unable to perform this action. Please try again later."));
+            return res.json(errorFunction(true, "Recommendation not found. This may be a glich in our system."));
         } else {
             const ignoreFlag = await Recommendation.findOneAndUpdate(
                 { $or: [{ recommendationId: req.body.recommendationId }] },
