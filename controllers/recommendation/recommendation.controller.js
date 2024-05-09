@@ -76,7 +76,7 @@ const ignoreRecommendedMovie = async (req, res, next) => {
             res.status(403);
             return res.json(errorFunction(true, "Unable to perform this action. Please try again later."));
         } else {
-            const ignoreFlag = await Friendship.findOneAndUpdate(
+            const ignoreFlag = await Recommendation.findOneAndUpdate(
                 { $or: [{ recommendationId: req.body.recommendationId }] },
                 { $set: { recommendationStatus: "ignored" } }
             );
