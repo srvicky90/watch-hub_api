@@ -56,7 +56,6 @@ const addRecommendation = async (req, res, next) => {
 const ignoreRecommendation = async (req, res, next) => {
     const payload = {
         senderId: req.body.senderId,
-        recommendationStatus: "ignored",
         recommendationId: req.body.recommendationId
     };
     console.log(payload);
