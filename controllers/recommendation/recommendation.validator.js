@@ -7,7 +7,7 @@ const addRecommendationValidation = joi.object({
     movie: joi.object().keys({
         movieId: joi.string().min(3).max(50).trim(true).required(),
         movieName: joi.string().min(1).max(200).trim(true).required(),
-        movieYear: joi.string().min(1).max(5).trim(true).required(),
+        movieYear: joi.string().min(1).max(20).trim(true).required(),
         movieLink: joi.string().min(1).max(700).trim(true).required(),
         movieType: joi.string().min(1).max(50).trim(true).required(),
     }),
