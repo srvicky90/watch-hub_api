@@ -28,8 +28,8 @@ const recommendMovie = async (req, res, next) => {
                 movieId: req.body.movie.movieId,
                 movieName: req.body.movie.movieName,
                 movieYear: req.body.movie.movieYear,
-                movieLink: req.body.movie.link,
-                movieType: req.body.movie.type
+                movieLink: req.body.movie.movieLink,
+                movieType: req.body.movie.movieType
             }
             );
             const isMovieAlreadyThere = await Movies.findOne({
@@ -40,8 +40,8 @@ const recommendMovie = async (req, res, next) => {
                     movieId: req.body.movie.movieId,
                     movieName: req.body.movie.movieName,
                     movieYear: req.body.movie.movieYear,
-                    movieLink: req.body.movie.link,
-                    movieType: req.body.movie.type
+                    movieLink: req.body.movie.movieLink,
+                    movieType: req.body.movie.movieType
                 }
                 );
             }
