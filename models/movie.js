@@ -11,17 +11,17 @@ const movieSchema = new mongoose.Schema(
 		required: true, 
 		trim: true,
 	},
-    Year: {
+    movieYear: {
 		type: String,
 		required: true,
 		trim: true,
 	},
-	link: {
+	movieLink: {
 		type: String,
 		required: true,
 		trim: true,
 	},
-	type: {
+	movieType: {
 		type: String,
 		required: true,
 		trim: true,

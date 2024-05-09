@@ -39,5 +39,5 @@ const schema = new mongoose.Schema(
 { timestamps: true }
 );
 
-const Friendship = mongoose.model("wh_recommendation", schema);
-module.exports = Friendship;
+const Recommendation = mongoose.model("wh_recommendation", schema);
+module.exports = Recommendation;

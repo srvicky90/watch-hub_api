@@ -26,8 +26,8 @@ const recommendMovie = async (req, res, next) => {
                 receiverId: req.body.receiverId,
                 recommendationStatus: 'active',
                 movieId: req.body.movie.movieId,
-                movieYear: req.body.movie.Year,
-                type: req.body.movie.type
+                movieYear: req.body.movie.movieYear,
+                movieType: req.body.movie.type
             }
             );
             const isMovieAlreadyThere = await Movies.findOne({
