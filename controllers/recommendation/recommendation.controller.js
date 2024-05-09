@@ -26,6 +26,8 @@ const recommendMovie = async (req, res, next) => {
                 receiverId: req.body.receiverId,
                 recommendationStatus: 'active',
                 movieId: req.body.movie.movieId,
+                movieYear: req.body.movie.Year,
+                type: req.body.movie.type
             }
             );
             const isMovieAlreadyThere = await Movies.findOne({
@@ -35,7 +37,7 @@ const recommendMovie = async (req, res, next) => {
                 const newMovie = await Movies.create({
                     movieId: req.body.movie.movieId,
                     movieName: req.body.movie.movieName,
-                    genre: req.body.movie.movieGenre,
+                    Year: req.body.movie.movieYear,
                     link: req.body.movie.link,
                     type: req.body.movie.type
                 }
@@ -49,14 +51,14 @@ const recommendMovie = async (req, res, next) => {
             } else {
                 res.status(400);
                 console.log(error);
-                return res.json(errorFunction(true, "Error Recommending this movie. Please try again."));
+                return res.json(errorFunction(true, "Error recommending this movie. Please try again."));
             }
 
         }
     } catch (error) {
         res.status(400);
         console.log(error);
-        return res.json(errorFunction(true, "Error Sending Friend Request"));
+        return res.json(errorFunction(true, "Error recommending movie."));
     }
 };
 

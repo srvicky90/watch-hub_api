@@ -7,7 +7,7 @@ const addRecommendationValidation = joi.object({
     movie: joi.object().keys({
         movieId: joi.string().min(3).max(50).trim(true).required(),
         movieName: joi.string().min(1).max(200).trim(true).required(),
-        movieGenre: joi.string().min(1).max(50).trim(true).required(),
+        movieYear: joi.string().min(1).max(50).trim(true).required(),
         movieLink: joi.string().min(1).max(700).trim(true).required(),
         movieType: joi.string().min(1).max(50).trim(true).required(),
     }),
@@ -24,7 +24,7 @@ const addRecommendation = async (req, res, next) => {
     const moviePayload = {
         movieId: req.body.movie.movieId,
         movieName: req.body.movie.movieName,
-        movieGenre: req.body.movie.movieGenre,
+        movieYear: req.body.movie.movieYear,
         movieLink: req.body.movie.movieLink,
         movieType: req.body.movie.movieType
     };
