@@ -20,7 +20,7 @@ const loginFieldValidation = joi.object({
 });
 
 const getUserDetailsValidation = joi.object({
-	userName: joi.string().alphanum().min(3).max(25).trim(true).required(),
+	userName: joi.string().min(3).max(50).trim(true).required(),
 });
 
 const searchUser = joi.object({
