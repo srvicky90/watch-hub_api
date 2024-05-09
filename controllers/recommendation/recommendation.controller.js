@@ -24,7 +24,7 @@ const recommendMovie = async (req, res, next) => {
             const newRecommendation = await Recommendation.create({
                 senderId: req.body.senderId,
                 receiverId: req.body.receiverId,
-                recommendationStatus: 'active',
+                recommendationStatus: req.body.recommendationStatus,
                 movieId: req.body.movie.movieId,
                 movieName: req.body.movie.movieName,
                 movieYear: req.body.movie.movieYear,
