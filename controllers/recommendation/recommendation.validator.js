@@ -12,7 +12,7 @@ const addRecommendationValidation = joi.object({
         movieType: joi.string().min(1).max(50).trim(true).required(),
     }),
     receiverId: joi.string().min(3).max(50).trim(true).required(),
-    status: joi.string().valid("new","active", "ignored", "liked").required()
+    recommendationStatus: joi.string().valid("new","active", "ignored", "liked").required()
 });
 
 const ShowRecommendationsValidation = joi.object({
@@ -31,7 +31,7 @@ const addRecommendation = async (req, res, next) => {
     const payload = {
         senderId: req.body.senderId,
         receiverId: req.body.receiverId,
-        status: req.body.status,
+        recommendationStatus: req.body.recommendationStatus,
         movie: moviePayload
     };
     console.log(payload);
