@@ -127,7 +127,7 @@ const showRecommendations = async (req, res, next) => {
                 $lookup: {
                     from: "wh_users",
                     localField: "senderId",
-                    foreignField: "senderId",
+                    foreignField: "userId",
                     as: "senderDetails"
                 }
             }
