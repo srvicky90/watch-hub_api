@@ -121,6 +121,12 @@ const showRecommendations = async (req, res, next) => {
                     localField: "movieId",
                     foreignField: "movieId",
                     as: "movie"
+                },
+                $lookup: {
+                    from: "wh_users",
+                    localField: "senderId",
+                    foreignField: "senderId",
+                    as: "senderDetails"
                 }
             }
         ]
