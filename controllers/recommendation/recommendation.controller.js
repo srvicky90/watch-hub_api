@@ -26,7 +26,9 @@ const recommendMovie = async (req, res, next) => {
                 receiverId: req.body.receiverId,
                 recommendationStatus: 'active',
                 movieId: req.body.movie.movieId,
+                movieName: req.body.movie.movieName,
                 movieYear: req.body.movie.movieYear,
+                movieLink: req.body.movie.link,
                 movieType: req.body.movie.type
             }
             );
@@ -37,9 +39,9 @@ const recommendMovie = async (req, res, next) => {
                 const newMovie = await Movies.create({
                     movieId: req.body.movie.movieId,
                     movieName: req.body.movie.movieName,
-                    Year: req.body.movie.movieYear,
-                    link: req.body.movie.link,
-                    type: req.body.movie.type
+                    movieYear: req.body.movie.movieYear,
+                    movieLink: req.body.movie.link,
+                    movieType: req.body.movie.type
                 }
                 );
             }
