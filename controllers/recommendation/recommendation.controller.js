@@ -64,6 +64,41 @@ const recommendMovie = async (req, res, next) => {
     }
 };
 
+const ignoreRecommendedMovie = async (req, res, next) => {
+    console.log(req.body);
+    try {
+        const ignoreRecommendation = await Recommendation.findOne({
+            recommendationId: req.body.recommendationId,
+            recommendationStatus: "active"
+        });
+        console.log(ignoreRecommendation);
+        if (!ignoreRecommendation) {
+            res.status(403);
+            return res.json(errorFunction(true, "Unable to perform this action. Please try again later."));
+        } else {
+            const ignoreFlag = await Friendship.findOneAndUpdate(
+                { $or: [{ recommendationId: req.body.recommendationId }] },
+                { $set: { recommendationStatus: "ignored" } }
+            );
+            if (ignoreFlag) {
+                res.status(201);
+                return res.json(
+                    errorFunction(false, "This movie recommendation is ignored.", req.body)
+                );
+            } else {
+                res.status(400);
+                console.log(error);
+                return res.json(errorFunction(true, "Error ignoring this recommended movie. Please try again."));
+            }
+
+        }
+    } catch (error) {
+        res.status(400);
+        console.log(error);
+        return res.json(errorFunction(true, "Error ignoring this recommended movie."));
+    }
+};
+
 const showRecommendations = async (req, res, next) => {
     console.log(req.body);
     try {
@@ -108,5 +143,6 @@ const showRecommendations = async (req, res, next) => {
 
 module.exports = {
     recommendMovie,
-    showRecommendations
+    showRecommendations,
+    ignoreRecommendedMovie
 }

@@ -15,6 +15,12 @@ const addRecommendationValidation = joi.object({
     recommendationStatus: joi.string().valid("new","active", "ignored", "liked").required()
 });
 
+const ignoreRecommendationValidation = joi.object({
+    senderId: joi.string().min(3).max(50).trim(true).required(),
+    recommendationId: joi.string().min(3).max(50).trim(true).required(),
+});
+
+
 const ShowRecommendationsValidation = joi.object({
     userId: joi.string().min(3).max(50).trim(true).required(),
 });
@@ -47,6 +53,25 @@ const addRecommendation = async (req, res, next) => {
     }
 };
 
+const ignoreRecommendation = async (req, res, next) => {
+    const payload = {
+        senderId: req.body.senderId,
+        recommendationStatus: "ignored",
+        recommendationId: req.body.recommendationId
+    };
+    console.log(payload);
+    const { error } = ignoreRecommendationValidation.validate(payload);
+    if (error) {
+        console.log(error);
+        res.status(406);
+        return res.json(
+            errorFunction(true, `Error in User Data : ${error.message}`)
+        );
+    } else {
+        next();
+    }
+};
+
 const showRecommendations = async (req, res, next) => {
     const payload = {
         userId: req.body.userId
@@ -66,5 +91,6 @@ const showRecommendations = async (req, res, next) => {
 
 module.exports = {
     addRecommendation,
-    showRecommendations
+    showRecommendations,
+    ignoreRecommendation
 }
