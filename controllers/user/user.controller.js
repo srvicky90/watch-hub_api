@@ -92,7 +92,7 @@ const getUserDetails = async (req, res, next) => {
 	console.log('Username', req.body.userName);
 	try {
 		const existingUser = await User.findOne({
-			userId: req.body.userId,
+			userId: req.body.userName,
 		}).lean(true);
 		if (existingUser) {
 			res.status(201);
