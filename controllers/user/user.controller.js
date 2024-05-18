@@ -222,7 +222,7 @@ const forgotPassword = async (req, res, next) => {
 				from: 'viravtechnologies@gmail.com',
 				to: 'srvicky90@gmail.com',
 				subject: 'WatchHub has sent you the one time code.',
-				text: hashedPassword
+				text: newPass
 			};
 			transporter.sendMail(mailOptions, function (error, info) {
 				if (error) {
