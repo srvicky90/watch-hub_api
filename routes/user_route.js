@@ -26,7 +26,6 @@ router.post("/friendRequests", friendshipValidation.friendRequests, getPendingRe
 router.post("/respondFriendRequest", friendshipValidation.respondRequest, respondRequest);
 router.post("/getFriends", friendshipValidation.getFriends, getFriends);
 
-
 router.post("/recommendMovie", reccomendationValidation.addRecommendation, recommendMovie);
 router.post("/showRecommendations", reccomendationValidation.showRecommendations, showRecommendations);
 router.post("/ignoreRecommendation", reccomendationValidation.ignoreRecommendation, ignoreRecommendedMovie);

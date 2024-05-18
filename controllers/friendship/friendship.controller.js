@@ -17,7 +17,7 @@ const createPendingFriendReq = async (req, res, next) => {
                 { sender: req.body.sender, receiver: req.body.receiver },
                 { sender: req.body.receiver, receiver: req.body.sender }
             ],
-            status: 'pending' // Assuming 'accepted' is the status for a confirmed friendship
+            status: 'pending' 
         });
         if (alreadyFriend) {
             res.status(403);

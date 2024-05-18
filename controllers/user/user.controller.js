@@ -221,8 +221,8 @@ const forgotPassword = async (req, res, next) => {
 			var mailOptions = {
 				from: 'viravtechnologies@gmail.com',
 				to: 'srvicky90@gmail.com',
-				subject: 'Sending Email using Node.js',
-				text: 'That was easy!'
+				subject: 'WatchHub has sent you the one time code.',
+				text: hashedPassword
 			};
 			transporter.sendMail(mailOptions, function (error, info) {
 				if (error) {
@@ -235,12 +235,12 @@ const forgotPassword = async (req, res, next) => {
 					console.log('Email sent: ' + info.response);
 					res.status(200);
 					return res.json(
-						errorFunction(false, "A one time password has been sent to your email. Please use it to reset your. ", user)
+						errorFunction(false, "A one time password has been sent to your registered email. Please use it to reset your password. ", user)
 					);
 				}
 			});
 			return res.json(
-				errorFunction(false, "A one time password has been sent to your email. Please use it to reset your. ", user)
+				errorFunction(false, "A one time password has been sent to your registered email. Please use it to reset your password. ", user)
 			);
 		}
 	} catch (error) {
