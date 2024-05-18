@@ -123,7 +123,7 @@ const deleteUserAccount = async (req, res, next) => {
 
 const forgotPassword = async (req, res, next) => {
 	const payload = {
-		userId: req.body.emailAddress,
+		emailAddress: req.body.emailAddress,
 	};
 	console.log(payload);
 	const { error } = forgotPasswordValidation.validate(payload);
