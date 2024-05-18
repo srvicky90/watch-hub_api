@@ -243,7 +243,7 @@ const forgotPassword = async (req, res, next) => {
 				errorFunction(false, "A one time password has been sent to your registered email. Please use it to reset your password. ", user)
 			);
 		} else {
-			console.log('User not found to send the temporrary password' + res.emailAddress);
+			console.log('User not found to send the temporary password' + res.emailAddress);
 					res.status(403);
 					return res.json(
 						errorFunction(true, "The email address is not registered with us.", user)
