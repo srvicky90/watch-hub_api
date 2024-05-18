@@ -221,7 +221,7 @@ const forgotPassword = async (req, res, next) => {
 			var mailOptions = {
 				from: 'viravtechnologies@gmail.com',
 				to: 'srvicky90@gmail.com',
-				subject: 'WatchHub has sent you the one time code.',
+				subject: 'WatchHub has sent you the temporary password.',
 				text: newPass
 			};
 			transporter.sendMail(mailOptions, function (error, info) {
@@ -242,6 +242,12 @@ const forgotPassword = async (req, res, next) => {
 			return res.json(
 				errorFunction(false, "A one time password has been sent to your registered email. Please use it to reset your password. ", user)
 			);
+		} else {
+			console.log('User not found to send the temporrary password' + res.emailAddress);
+					res.status(403);
+					return res.json(
+						errorFunction(false, "The email address is not registered with us.", user)
+					);
 		}
 	} catch (error) {
 		res.status(400);
