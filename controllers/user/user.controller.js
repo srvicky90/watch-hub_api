@@ -179,11 +179,11 @@ const deleteUserAccount = async (req, res, next) => {
 }
 
 const forgotPassword = async (req, res, next) => {
-	console.log('user id', req.body.userId);
+	console.log('user id', req.body.emailAddress);
 	try {
 		user = await User.findOne({
 			$or: [
-				{ userId: req.body.userId },
+				{ emailAddress: req.body.emailAddress },
 			]
 		}).lean(true);
 		if (user) {
@@ -200,7 +200,7 @@ const forgotPassword = async (req, res, next) => {
 			const hashedPassword = await securePassword(newPass);
 			console.log(hashedPassword);
 			const user1 = await User.findOneAndUpdate (
-				{ userId: req.body.userId  },
+				{ userId: req.body.emailAddress  },
 				{
 					$set:
 					{

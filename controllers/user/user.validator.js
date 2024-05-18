@@ -32,7 +32,7 @@ const deleteUser = joi.object({
 });
 
 const forgotPasswordValidation = joi.object({
-	userId: joi.string().min(3).max(50).trim(true).required(),
+	emailAddress: joi.string().email().trim(true).required(),
 });
 
 const userValidation = async (req, res, next) => {
@@ -123,7 +123,7 @@ const deleteUserAccount = async (req, res, next) => {
 
 const forgotPassword = async (req, res, next) => {
 	const payload = {
-		userId: req.body.userId,
+		userId: req.body.emailAddress,
 	};
 	console.log(payload);
 	const { error } = forgotPasswordValidation.validate(payload);
