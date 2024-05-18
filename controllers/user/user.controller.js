@@ -246,7 +246,7 @@ const forgotPassword = async (req, res, next) => {
 			console.log('User not found to send the temporrary password' + res.emailAddress);
 					res.status(403);
 					return res.json(
-						errorFunction(false, "The email address is not registered with us.", user)
+						errorFunction(true, "The email address is not registered with us.", user)
 					);
 		}
 	} catch (error) {
