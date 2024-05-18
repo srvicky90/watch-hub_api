@@ -190,7 +190,7 @@ const forgotPassword = async (req, res, next) => {
 			const crypto = require('crypto')
 			const generatePassword = (
 				length = 10,
-				characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'
+				characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$'
 			) =>
 				Array.from(crypto.randomFillSync(new Uint32Array(length)))
 					.map((x) => characters[x % characters.length])
@@ -200,12 +200,12 @@ const forgotPassword = async (req, res, next) => {
 			const hashedPassword = await securePassword(newPass);
 			console.log(hashedPassword);
 			const user1 = await User.findOneAndUpdate (
-				{ userId: req.body.emailAddress  },
+				{ emailAddress: req.body.emailAddress  },
 				{
 					$set:
 					{
 						password: hashedPassword,
-						isPasswordReset: false
+						isPasswordReset: true
 					},
 				}
 			);
