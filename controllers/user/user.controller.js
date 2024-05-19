@@ -88,6 +88,59 @@ const loginUser = async (req, res, next) => {
 	}
 }
 
+const changePassword = async (req, res, next) => {
+	console.log('temp password', req.body.tempPassword);
+	console.log('new password', req.body.newPassword);
+	try {
+		const existingUser = await User.findOne({
+			emailAddress: req.body.emailAddress,
+		}).lean(true);
+		if (existingUser) {
+			
+			console.log("DB retrieved " + existingUser.password);
+			const userHashPassword = await securePassword(req.body.tempPassword);
+			console.log("User Entered hashed password " + userHashPassword);
+
+			if (await bcrypt.compare(req.body.tempPassword, existingUser.password)) {
+				console.log("Password verified");
+				const hashedPassword = await securePassword(req.body.newPassword);
+				console.log(hashedPassword);
+				const user1 = await User.findOneAndUpdate(
+					{ emailAddress: req.body.emailAddress },
+					{
+						$set:
+						{
+							password: hashedPassword,
+							isPasswordReset: false
+						},
+					}
+				);
+				res.status(200);
+				return res.json(
+					errorFunction(false, "Valid Credentials.", existingUser)
+				);
+			} else {
+				console.log("Password not verified");
+				return res.status(401).json({
+					status: "failed",
+					data: [],
+					message:
+						"Invalid credentials entered. Please try again.",
+				});
+			}
+		} else {
+			res.status(401);
+			return res.json(
+				errorFunction(true, "The email address is not registered with us. Please try with a valid email address.")
+			);
+		}
+	} catch (error) {
+		res.status(400);
+		console.log(error);
+		return res.json(errorFunction(true, "You've entered wrong credentials. Please retry."));
+	}
+}
+
 const getUserDetails = async (req, res, next) => {
 	console.log('Username', req.body.userName);
 	try {
@@ -258,58 +311,7 @@ const forgotPassword = async (req, res, next) => {
 	}
 }
 
-const changePassword = async (req, res, next) => {
-	console.log('temp password', req.body.tempPassword);
-	console.log('new password', req.body.newPassword);
-	try {
-		const existingUser = await User.findOne({
-			emailAddress: req.body.emailAddress,
-		}).lean(true);
-		if (existingUser) {
-			res.status(201);
-			console.log("DB retrieved " + existingUser.password);
-			const userHashPassword = await securePassword(req.body.tempPassword);
-			console.log("User Entered hashed password " + userHashPassword);
 
-			if (await bcrypt.compare(req.body.tempPassword, existingUser.password)) {
-				console.log("Password verified");
-				const hashedPassword = await securePassword(req.body.newPassword);
-				console.log(hashedPassword);
-				const user1 = await User.findOneAndUpdate(
-					{ emailAddress: req.body.emailAddress },
-					{
-						$set:
-						{
-							password: hashedPassword,
-							isPasswordReset: false
-						},
-					}
-				);
-				res.status(200);
-				return res.json(
-					errorFunction(false, "Valid Credentials.", existingUser)
-				);
-			} else {
-				console.log("Password not verified");
-				return res.status(401).json({
-					status: "failed",
-					data: [],
-					message:
-						"Invalid credentials entered. Please try again.",
-				});
-			}
-		} else {
-			res.status(401);
-			return res.json(
-				errorFunction(true, "The email address is not registered with us. Please try with a valid email address.")
-			);
-		}
-	} catch (error) {
-		res.status(400);
-		console.log(error);
-		return res.json(errorFunction(true, "You've entered wrong credentials. Please retry."));
-	}
-}
 
 module.exports = {
 	addUser,
