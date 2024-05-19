@@ -196,11 +196,11 @@ const forgotPassword = async (req, res, next) => {
 					.map((x) => characters[x % characters.length])
 					.join('')
 			let newPass = generatePassword();
-			console.log(newPass);	
+			console.log(newPass);
 			const hashedPassword = await securePassword(newPass);
 			console.log(hashedPassword);
-			const user1 = await User.findOneAndUpdate (
-				{ emailAddress: req.body.emailAddress  },
+			const user1 = await User.findOneAndUpdate(
+				{ emailAddress: req.body.emailAddress },
 				{
 					$set:
 					{
@@ -244,10 +244,10 @@ const forgotPassword = async (req, res, next) => {
 			);
 		} else {
 			console.log('User not found to send the temporary password' + res.emailAddress);
-					res.status(403);
-					return res.json(
-						errorFunction(true, "The email address is not registered with us.", user)
-					);
+			res.status(403);
+			return res.json(
+				errorFunction(true, "The email address is not registered with us.", user)
+			);
 		}
 	} catch (error) {
 		res.status(400);
@@ -258,11 +258,65 @@ const forgotPassword = async (req, res, next) => {
 	}
 }
 
+const changePassword = async (req, res, next) => {
+	console.log('current password', req.body.currentPassword);
+	console.log('new password', req.body.newPassword);
+	try {
+		const existingUser = await User.findOne({
+			emailAddress: req.body.emailAddress,
+		}).lean(true);
+		if (existingUser) {
+			res.status(201);
+			console.log("DB retrieved " + existingUser.password);
+			const userHashPassword = await securePassword(req.body.currentPassword);
+			console.log("User Entered hashed password " + userHashPassword);
+
+			if (await bcrypt.compare(req.body.currentPassword, existingUser.password)) {
+				console.log("Password verified");
+				const hashedPassword = await securePassword(req.body.newPassword);
+				console.log(hashedPassword);
+				const user1 = await User.findOneAndUpdate(
+					{ emailAddress: req.body.emailAddress },
+					{
+						$set:
+						{
+							password: hashedPassword,
+							isPasswordReset: false
+						},
+					}
+				);
+				res.status(200);
+				return res.json(
+					errorFunction(false, "Valid Credentials.", existingUser)
+				);
+			} else {
+				console.log("Password not verified");
+				return res.status(401).json({
+					status: "failed",
+					data: [],
+					message:
+						"Something went wrong. Please retry.",
+				});
+			}
+		} else {
+			res.status(401);
+			return res.json(
+				errorFunction(true, "The email address is not registered with us. Please try with a valid email address.")
+			);
+		}
+	} catch (error) {
+		res.status(400);
+		console.log(error);
+		return res.json(errorFunction(true, "You've entered wrong credentials. Please retry."));
+	}
+}
+
 module.exports = {
 	addUser,
 	loginUser,
 	getUserDetails,
 	searchUsers,
 	deleteUserAccount,
-	forgotPassword
+	forgotPassword,
+	changePassword
 }

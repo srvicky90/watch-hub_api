@@ -35,6 +35,14 @@ const forgotPasswordValidation = joi.object({
 	emailAddress: joi.string().email().trim(true).required(),
 });
 
+const changePasswordValidation = joi.object({
+	tempPassword: joi.string().min(8).trim(true).required()
+		.default([]),
+	newPassword: joi.string().min(8).trim(true).required()
+		.default([]),
+	emailAddress: joi.string().email().trim(true).required(),
+});
+
 const userValidation = async (req, res, next) => {
 	const payload = {
 		userName: req.body.userName,
@@ -137,11 +145,30 @@ const forgotPassword = async (req, res, next) => {
 	}
 };
 
+const changePassword = async (req, res, next) => {
+	const payload = {
+		tempPassword: req.body.tempPassword,
+		newPassword: req.body.newPassword,
+		emailAddress: req.body.emailAddress,
+	};
+	console.log(payload);
+	const { error } = changePasswordValidation.validate(payload);
+	if (error) {
+		res.status(406);
+		return res.json(
+			errorFunction(true, `Error in User Data : ${error.message}`)
+		);
+	} else {
+		next();
+	}
+};
+
 module.exports = {
 	userValidation,
 	loginValidation,
 	getUserDetails,
 	searchUsers,
 	deleteUserAccount,
-	forgotPassword
+	forgotPassword,
+	changePassword
 }
