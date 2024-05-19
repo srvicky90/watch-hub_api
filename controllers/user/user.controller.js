@@ -259,7 +259,7 @@ const forgotPassword = async (req, res, next) => {
 }
 
 const changePassword = async (req, res, next) => {
-	console.log('current password', req.body.currentPassword);
+	console.log('temp password', req.body.tempPassword);
 	console.log('new password', req.body.newPassword);
 	try {
 		const existingUser = await User.findOne({
@@ -268,10 +268,10 @@ const changePassword = async (req, res, next) => {
 		if (existingUser) {
 			res.status(201);
 			console.log("DB retrieved " + existingUser.password);
-			const userHashPassword = await securePassword(req.body.currentPassword);
+			const userHashPassword = await securePassword(req.body.tempPassword);
 			console.log("User Entered hashed password " + userHashPassword);
 
-			if (await bcrypt.compare(req.body.currentPassword, existingUser.password)) {
+			if (await bcrypt.compare(req.body.tempPassword, existingUser.password)) {
 				console.log("Password verified");
 				const hashedPassword = await securePassword(req.body.newPassword);
 				console.log(hashedPassword);
@@ -295,7 +295,7 @@ const changePassword = async (req, res, next) => {
 					status: "failed",
 					data: [],
 					message:
-						"Something went wrong. Please retry.",
+						"Invalid credentials entered. Please try again.",
 				});
 			}
 		} else {
