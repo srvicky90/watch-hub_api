@@ -273,9 +273,9 @@ const forgotPassword = async (req, res, next) => {
 			});
 			var mailOptions = {
 				from: 'viravtechnologies@gmail.com',
-				to: 'srvicky90@gmail.com',
-				subject: 'WatchHub has sent you the temporary password.',
-				text: newPass
+				to: req.body.emailAddress,
+				subject: 'Temporary password from WatchHub ',
+				text: 'Please use this the temporary password to login to WatchHub application - \n' + newPass + '. '
 			};
 			transporter.sendMail(mailOptions, function (error, info) {
 				if (error) {
