@@ -9,6 +9,9 @@ const { createPendingFriendReq, getPendingRequests, respondRequest, getFriends  
 const reccomendationValidation = require("../controllers/recommendation/recommendation.validator");
 const { recommendMovie, showRecommendations, ignoreRecommendedMovie } = require("../controllers/recommendation/recommendation.controller");
 
+const boxOfficeValidation = require("../controllers/movies/movie_box_office.validator");
+const { getBoxOfficeMovie } = require("../controllers/movies/movie_box_office.controller");
+
 const defaultController = require("../controllers/default_controller");
 
 const router = express.Router();
@@ -30,5 +33,7 @@ router.post("/getFriends", friendshipValidation.getFriends, getFriends);
 router.post("/recommendMovie", reccomendationValidation.addRecommendation, recommendMovie);
 router.post("/showRecommendations", reccomendationValidation.showRecommendations, showRecommendations);
 router.post("/ignoreRecommendation", reccomendationValidation.ignoreRecommendation, ignoreRecommendedMovie);
+
+router.post("/getBoxOfficeMovies", boxOfficeValidation.getBoxOffice, getBoxOfficeMovie);
 
 module.exports = router;
