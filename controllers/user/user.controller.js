@@ -1,8 +1,12 @@
 const bcrypt = require("bcryptjs");
 var nodemailer = require('nodemailer');
 const User = require("../../models/user");
+const jwt = require('jsonwebtoken');
+
 const errorFunction = require("../../utils/error_function");
 const securePassword = require("./../../utils/secure_password");
+
+const SECRET_KEY = 'vL7TmsQTPmJ3wjeqoLqI9VQYo3CWaY0f';
 
 const addUser = async (req, res, next) => {
 	try {
@@ -50,6 +54,7 @@ const addUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
 	console.log('Username', req.body.userName);
 	console.log('Password', req.body.password);
+	const usern = req.body.userName;
 	try {
 		const existingUser = await User.findOne({
 			userName: req.body.userName,
@@ -59,10 +64,12 @@ const loginUser = async (req, res, next) => {
 			console.log("DB retrieved " + existingUser.password);
 			const userHashPassword = await securePassword(req.body.password);
 			console.log("User Entered hashed password " + userHashPassword);
-
 			if (await bcrypt.compare(req.body.password, existingUser.password)) {
 				console.log("Password verified");
 				res.status(200);
+				const token = jwt.sign({ usern}, SECRET_KEY, { expiresIn: '365d' });
+				existingUser["token"] = token;
+				existingUser["expiresIn"] = 31536000;
 				return res.json(
 					errorFunction(false, "Valid Credentials.", existingUser)
 				);
