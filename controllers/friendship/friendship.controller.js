@@ -54,7 +54,7 @@ const getPendingRequests = async (req, res, next) => {
         const userFriends = await Friendship.aggregate([
             {
                 $match: {
-                    $or: [{ sender: req.body.receiver }, { receiver: req.body.receiver }],
+                    $or: [{ receiver: req.body.receiver }],
                     status: "pending"
                 }
             },
