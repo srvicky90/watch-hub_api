@@ -12,6 +12,9 @@ const { recommendMovie, showRecommendations, ignoreRecommendedMovie } = require(
 const boxOfficeValidation = require("../controllers/movies/movie_box_office.validator");
 const { getBoxOfficeMovie } = require("../controllers/movies/movie_box_office.controller");
 
+const featureFlagValidation = require("../controllers/feature_flag/feature_flag.validator");
+const { featureFlag } = require("../controllers/feature_flag/feature_flag.controller");
+
 const defaultController = require("../controllers/default_controller");
 
 const router = express.Router();
@@ -35,5 +38,6 @@ router.post("/showRecommendations", reccomendationValidation.showRecommendations
 router.post("/ignoreRecommendation", reccomendationValidation.ignoreRecommendation, ignoreRecommendedMovie);
 
 router.post("/getBoxOfficeMovies", boxOfficeValidation.getBoxOffice, getBoxOfficeMovie);
+router.post("/featureFlag", featureFlagValidation.featureFlagValidation, featureFlag);
 
 module.exports = router;
