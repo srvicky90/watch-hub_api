@@ -15,6 +15,9 @@ const { getBoxOfficeMovie } = require("../controllers/movies/movie_box_office.co
 const featureFlagValidation = require("../controllers/feature_flag/feature_flag.validator");
 const { featureFlag } = require("../controllers/feature_flag/feature_flag.controller");
 
+const random_validation_validation = require("../controllers/ai_recommendation/random_movies/random_movies.validator");
+const { random_movies } = require("../controllers/ai_recommendation/random_movies/random_movies.controller");
+
 const defaultController = require("../controllers/default_controller");
 
 const router = express.Router();
@@ -39,5 +42,7 @@ router.post("/ignoreRecommendation", reccomendationValidation.ignoreRecommendati
 
 router.post("/getBoxOfficeMovies", boxOfficeValidation.getBoxOffice, getBoxOfficeMovie);
 router.post("/featureFlag", featureFlagValidation.featureFlagValidation, featureFlag);
+
+router.get("/random", random_validation_validation.ai_random_movies_validation, random_movies);
 
 module.exports = router;
