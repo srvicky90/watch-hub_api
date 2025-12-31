@@ -21,6 +21,52 @@ async function fetchExternalIds(tmdbId) {
   return res.data.imdb_id || null;
 }
 
+async function fetchCredits(tmdbId) {
+  const url = `${TMDB_BASE}/movie/${tmdbId}/credits?api_key=${TMDB_API_KEY}`;
+  const res = await axios.get(url);
+
+  const cast = res.data.cast || [];
+  const crew = res.data.crew || [];
+
+  // Top 5 cast members
+  const castNames = cast.slice(0, 5).map(c => c.name);
+
+  // Directors and writers
+  const crewNames = crew
+    .filter(c => ["Director", "Writer", "Screenplay"].includes(c.job))
+    .map(c => c.name);
+
+  return { castNames, crewNames };
+}
+
+async function enrich_cast() {
+  await connectDB();
+
+  const movies = await Movie.find({ hasImdb: false, $or: [{ cast: { $exists: false } }, { crew: { $exists: false } }] }).limit(5000);
+  console.log(`🎬 Movies to enrich: ${movies.length}`);
+
+  for (const m of movies) {
+    try {
+      const { castNames, crewNames } = await fetchCredits(m.tmdbId);
+
+      await Movie.updateOne(
+        { _id: m._id },
+        { $set: { cast: castNames, crew: crewNames } }
+      );
+
+      console.log(`✔ ${m.title} updated: ${castNames.length} cast, ${crewNames.length} crew`);
+
+      // avoid rate limits
+      await new Promise(r => setTimeout(r, 200));
+    } catch (err) {
+      console.error(`❌ Failed for ${m.title}`, err.message);
+    }
+  }
+
+  console.log("🎉 Cast & crew enrichment complete");
+  process.exit();
+}
+
 async function enrich() {
   await connectDB();
 
@@ -57,4 +103,7 @@ async function enrich() {
   process.exit();
 }
 
-enrich();
+// enrich();
+enrich_cast();
+
+

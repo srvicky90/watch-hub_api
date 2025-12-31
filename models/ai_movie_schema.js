@@ -15,6 +15,8 @@ const MovieSchema = new mongoose.Schema({
   runtime: Number,
   createdAt: { type: Date, default: Date.now },
   imdbId: { type: String, index: true },
+  cast: [String],   // top 5 actors
+  crew: [String],   // directors / writers
   hasImdb: { type: Boolean, default: null }
 });
 

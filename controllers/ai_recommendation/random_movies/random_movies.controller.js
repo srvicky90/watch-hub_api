@@ -8,8 +8,14 @@ const random_movies = async (req, res, next) => {
         const match = { hasImdb: true };
 
         const movies = await Movie.aggregate([
-            { $match: match },
-            { $sample: { size: limit } }
+            {
+                $match: {
+                    hasImdb: true,
+                    popularity: { $gte: 120 },
+                    voteCount: { $gte: 120 }
+                }
+            },
+            { $sample: { size: 4 } }
         ]);
         res.json(errorFunction(false, 'Random Movies', movies));
     }
